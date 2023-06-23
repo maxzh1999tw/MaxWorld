@@ -1,0 +1,135 @@
+﻿@{
+    Layout = "_UnauthenticateLayout";
+}
+<div id="app" class="card o-hidden border-0 shadow-lg my-5">
+    <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+            <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+            <div class="col-lg-7">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">註冊</h1>
+                    </div>
+                    <form class="user" v-on:submit.prevent="submit">
+                        <div class="form-group">
+                            <input id="name" v-model="name" type="text" class="form-control form-control-user" placeholder="暱稱">
+                        </div>
+                        <div class="form-group">
+                            <input id="account" v-model="email" type="text" class="form-control form-control-user" placeholder="電子郵件">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input id="password" v-model="password" type="password" class="form-control form-control-user" placeholder="密碼">
+                            </div>
+                            <div class="col-sm-6">
+                                <input id="password-confirm" v-model="passwordConfirm" type="password" class="form-control form-control-user" placeholder="再次輸入密碼">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                            註冊
+                        </button>
+                        @*<hr>
+                        <a href="index.html" class="btn btn-google btn-user btn-block">
+                        <i class="fab fa-google fa-fw"></i> Register with Google
+                        </a>
+                        <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                        <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
+                        </a>*@
+                    </form>
+                    <hr>
+                    <div class="text-center">
+                        <a class="small" asp-action="Login">已經有帳號了嗎？立即登入！</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    name: "",
+                    email: "",
+                    password: "",
+                    passwordConfirm: ""
+                }
+            },
+            methods: {
+                submit() {
+                    if (isNullOrEmpty(this.name)) {
+                        Swal.fire({
+                            text: '請輸入暱稱',
+                            icon: 'warning',
+                        })
+                        return
+                    }
+
+                    if (!validateEmail(this.email)) {
+                        Swal.fire({
+                            text: '請輸入正確的電子郵件',
+                            icon: 'warning',
+                        })
+                        return
+                    }
+
+                    if (isNullOrEmpty(this.password)) {
+                        Swal.fire({
+                            text: '請輸入密碼',
+                            icon: 'warning',
+                        })
+                        return
+                    }
+
+                    if (this.password !== this.passwordConfirm) {
+                        Swal.fire({
+                            text: '兩次密碼輸入不同',
+                            icon: 'warning',
+                        })
+                        return
+                    }
+
+                    ajaxApi({
+                        method: 'post',
+                        url: '@Url.Action("Register")',
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        data: {
+                            name: this.name,
+                            email: this.email,
+                            password: this.password,
+                        }
+                    }, async response => {
+                        if (response.data.success) {
+                            await Swal.fire({
+                                text: '註冊成功！',
+                                icon: 'success',
+                            })
+                            window.location.href = '@Url.Action("Index")'
+                            return
+                        }
+
+                        switch (response.data.errorCode) {
+                            case 'Registered':
+                                Swal.fire({
+                                    text: '此 Email 已經註冊過囉！',
+                                    icon: 'warning',
+                                })
+                                break
+                            default:
+                                Swal.fire({
+                                    text: '發生錯誤，請聯絡系統管理員，或稍後再試！',
+                                    icon: 'error',
+                                })
+                        }
+                    })
+                }
+            }
+        }).mount('#app')
+    </script>
+}

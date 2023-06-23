@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaxWorld.Data", "MaxWorld.Data\MaxWorld.Data.csproj", "{D0FDCB04-B774-4707-A920-927D11717C64}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaxWorld.Web", "MaxWorld.Web\MaxWorld.Web.csproj", "{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0FDCB04-B774-4707-A920-927D11717C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0FDCB04-B774-4707-A920-927D11717C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0FDCB04-B774-4707-A920-927D11717C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0FDCB04-B774-4707-A920-927D11717C64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {87E6D593-A8F2-4D8F-883C-BF16F7A779C0}
+	EndGlobalSection
+EndGlobal

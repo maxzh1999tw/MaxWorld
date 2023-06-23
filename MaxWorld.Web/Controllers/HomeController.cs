@@ -1,0 +1,184 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using MaxWorld.Web.Filters;
+using MaxWorld.Web.Models;
+using MaxWorld.Web.Services;
+using MaxWorld.Web.Utilities.MailSenders;
+using System.Diagnostics;
+
+namespace MaxWorld.Web.Controllers
+{
+    public class HomeController : BaseController
+    {
+        private readonly ILogger<HomeController> _logger;
+        private readonly AuthService _authService;
+        private readonly MailHelper _mailHelper;
+        public HomeController(
+            ILogger<HomeController> logger,
+            AuthService authService,
+            MailHelper mailHelper,
+            BaseControllerArgument baseControllerArgument) : base(baseControllerArgument)
+        {
+            _logger = logger;
+            _authService = authService;
+            _mailHelper = mailHelper;
+        }
+
+        public IActionResult Index()
+        {
+            if (SessionUserInfo == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+            return View();
+        }
+
+        #region === Login ===
+
+        public IActionResult Login()
+        {
+            if (SessionUserInfo != null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ApiExceptionFilter]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            if (SessionUserInfo != null)
+            {
+                return BadRequest();
+            }
+
+            var user = await _authService.LoginAsync(email, password);
+            if (user == null)
+            {
+                return ApiFailed("Invalid");
+            }
+
+            SessionUserInfo = new SessionUserInfo(user.UserId, user.Name);
+            return ApiSuccess();
+        }
+
+        #endregion
+
+        #region === Register ===
+
+        public IActionResult Register()
+        {
+            if (SessionUserInfo != null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ApiExceptionFilter]
+        public async Task<IActionResult> Register(string email, string password, string name)
+        {
+            if (SessionUserInfo != null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return ApiFailed(InvalidModelState);
+            }
+
+
+            if (await _authService.IsAccountRegisteredAsync(email))
+            {
+                return ApiFailed("Registered");
+            }
+
+            using var trans = Repository.BeginTransaction();
+            Guid userId;
+            userId = await _authService.RegisterAsync(email, password, name);
+            trans.Commit();
+
+            SessionUserInfo = new SessionUserInfo(userId, name);
+            return ApiSuccess();
+        }
+
+        #endregion
+
+        #region === ForgotPassword ===
+
+        public IActionResult ForgotPassword()
+        {
+            if (SessionUserInfo != null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ApiExceptionFilter]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (SessionUserInfo != null)
+            {
+                return BadRequest();
+            }
+
+            if (!await _authService.IsAccountRegisteredAsync(email))
+            {
+                return ApiFailed("Invalid");
+            }
+
+            // TODO: 重設帳號流程
+            var resetToken = await _authService.GeneratePasswordResetTokenAsync(email);
+            string scheme = Url.ActionContext.HttpContext.Request.Scheme;
+            var resetUrl = $"{Url.Action("ResetPassword", "Home", null, scheme)}?token={resetToken}";
+            await _mailHelper.SendAsync(email, "重設密碼信", $"請<a href='{resetUrl}'>點擊此處</a>重設密碼。");
+
+            return ApiSuccess();
+        }
+
+        public IActionResult ResetPassword()
+        {
+            if (SessionUserInfo != null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ApiExceptionFilter]
+        public async Task<IActionResult> ResetPassword(string token, string password)
+        {
+            if (SessionUserInfo != null)
+            {
+                return BadRequest();
+            }
+
+            var userId = await _authService.GetUserIdByPasswordResetTokenAsync(token);
+            if (userId == null)
+            {
+                return ApiFailed("Invalid");
+            }
+
+            var user = await _authService.ResetPasswordAsync(userId.Value, password);
+            SessionUserInfo = new SessionUserInfo(userId.Value, user.Name);
+            return ApiSuccess();
+        }
+
+        #endregion
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+}

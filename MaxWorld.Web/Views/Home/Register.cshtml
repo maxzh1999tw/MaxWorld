@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "_UnauthenticateLayout";
+    ViewBag.Title = "註冊";
 }
 <div id="app" class="card o-hidden border-0 shadow-lg my-5">
     <div class="card-body p-0">
@@ -9,7 +10,7 @@
             <div class="col-lg-7">
                 <div class="p-5">
                     <div class="text-center">
-                        <h1 class="h4 text-gray-900 mb-4">註冊</h1>
+                        <h1 class="h4 text-gray-900 mb-4">@ViewBag.Title</h1>
                     </div>
                     <form class="user" v-on:submit.prevent="submit">
                         <div class="form-group">

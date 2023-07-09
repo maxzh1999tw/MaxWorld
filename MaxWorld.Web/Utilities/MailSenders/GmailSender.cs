@@ -10,13 +10,13 @@ namespace MaxWorld.Web.Utilities.MailSenders
         private string _sendFrom;
         private string _password;
 
-        public GmailSender(string host, int port, string sendFrom, string sendName, string password)
+        public GmailSender(IConfiguration configuration)
         {
-            _host = host;
-            _port = port;
-            _sendFrom = sendFrom;
-            _sendName = sendName;
-            _password = password;
+            _host = configuration["SMTP:Host"] ?? throw new KeyNotFoundException();
+            _port = int.Parse(configuration["SMTP:Port"] ?? throw new KeyNotFoundException());
+            _sendFrom = configuration["SMTP:SendFrom"] ?? throw new KeyNotFoundException();
+            _sendName = configuration["SMTP:SendName"] ?? throw new KeyNotFoundException();
+            _password = configuration["SMTP:Password"] ?? throw new KeyNotFoundException();
         }
 
         public async Task SendMailAsync(MailData mailData)

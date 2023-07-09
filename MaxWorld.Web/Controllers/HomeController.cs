@@ -4,9 +4,11 @@ using MaxWorld.Web.Models;
 using MaxWorld.Web.Services;
 using MaxWorld.Web.Utilities.MailSenders;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MaxWorld.Web.Controllers
 {
+    [CustomAuthorize]
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
@@ -25,15 +27,12 @@ namespace MaxWorld.Web.Controllers
 
         public IActionResult Index()
         {
-            if (SessionUserInfo == null)
-            {
-                return RedirectToAction(nameof(Login));
-            }
             return View();
         }
 
         #region === Login ===
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             if (SessionUserInfo != null)
@@ -46,6 +45,7 @@ namespace MaxWorld.Web.Controllers
 
         [HttpPost]
         [ApiExceptionFilter]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(string email, string password)
         {
             if (SessionUserInfo != null)
@@ -66,7 +66,7 @@ namespace MaxWorld.Web.Controllers
         #endregion
 
         #region === Register ===
-
+        [AllowAnonymous]
         public IActionResult Register()
         {
             if (SessionUserInfo != null)
@@ -79,6 +79,7 @@ namespace MaxWorld.Web.Controllers
 
         [HttpPost]
         [ApiExceptionFilter]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(string email, string password, string name)
         {
             if (SessionUserInfo != null)
@@ -110,6 +111,7 @@ namespace MaxWorld.Web.Controllers
 
         #region === ForgotPassword ===
 
+        [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
             if (SessionUserInfo != null)
@@ -122,6 +124,7 @@ namespace MaxWorld.Web.Controllers
 
         [HttpPost]
         [ApiExceptionFilter]
+        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(string email)
         {
             if (SessionUserInfo != null)
@@ -143,6 +146,7 @@ namespace MaxWorld.Web.Controllers
             return ApiSuccess();
         }
 
+        [AllowAnonymous]
         public IActionResult ResetPassword()
         {
             if (SessionUserInfo != null)
@@ -155,6 +159,7 @@ namespace MaxWorld.Web.Controllers
 
         [HttpPost]
         [ApiExceptionFilter]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(string token, string password)
         {
             if (SessionUserInfo != null)
@@ -175,6 +180,7 @@ namespace MaxWorld.Web.Controllers
 
         #endregion
 
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

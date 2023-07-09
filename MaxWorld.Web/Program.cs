@@ -1,11 +1,10 @@
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using MaxWorld.Data;
 using MaxWorld.Web.Controllers;
-using MaxWorld.Web.Models;
 using MaxWorld.Web.Repositories;
 using MaxWorld.Web.Services;
 using MaxWorld.Web.Utilities.MailSenders;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace MaxWorld.Web
@@ -16,8 +15,7 @@ namespace MaxWorld.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var connectionString = builder.Configuration.GetConnectionString("Main");
-            builder.Services.AddDbContext<MaxWorldDbContext>(options => options.UseSqlServer(connectionString));
+            ServicesAddDb(builder);
 
             builder.Services.AddDistributedMemoryCache();
 
@@ -26,29 +24,23 @@ namespace MaxWorld.Web
                 options.IdleTimeout = TimeSpan.FromHours(1);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+                options.Cookie.Name = nameof(MaxWorld);
             });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddScoped<IDbConnection>(x =>
-            {
-                var connection = new SqlConnection(connectionString);
-                connection.Open();
-                return connection;
-            });
+            #region === Singleton ===
+            builder.Services.AddSingleton<IMailSender, GmailSender>();
+            builder.Services.AddSingleton<MailHelper>();
+            #endregion
+
+            #region === Scoped ===
             builder.Services.AddScoped<Repository>();
             builder.Services.AddScoped<BaseControllerArgument>();
             builder.Services.AddScoped<BaseServiceArgument>();
-            builder.Services.AddSingleton<IMailSender, GmailSender>(x => 
-                new GmailSender(
-                    builder.Configuration["SMTP:Host"] ?? throw new ApplicationException(),
-                    int.Parse(builder.Configuration["SMTP:Port"] ?? throw new ApplicationException()),
-                    builder.Configuration["SMTP:SendFrom"] ?? throw new ApplicationException(),
-                    builder.Configuration["SMTP:SendName"] ?? throw new ApplicationException(),
-                    builder.Configuration["SMTP:Password"] ?? throw new ApplicationException()));
-            builder.Services.AddSingleton<MailHelper>();
             builder.Services.AddScoped<AuthService>();
+            #endregion
 
             var app = builder.Build();
 
@@ -71,8 +63,6 @@ namespace MaxWorld.Web
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
             app.UseSession();
 
             app.MapControllerRoute(
@@ -80,6 +70,19 @@ namespace MaxWorld.Web
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+        }
+
+        private static void ServicesAddDb(WebApplicationBuilder builder)
+        {
+            var connectionString = builder.Configuration.GetConnectionString("Main");
+            builder.Services.AddDbContext<MaxWorldDbContext>(
+                options => options.UseSqlServer(connectionString));
+            builder.Services.AddScoped<IDbConnection>(x =>
+            {
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
+                return connection;
+            });
         }
     }
 }

@@ -8,6 +8,8 @@ namespace MaxWorld.Data
         public DbSet<User> User { get; set; }
         public DbSet<UserPassword> UserPassword { get; set; }
 
+        public DbSet<Notification> Notification { get; set; }
+
         public MaxWorldDbContext(DbContextOptions options) : base(options) { }
     }
 }

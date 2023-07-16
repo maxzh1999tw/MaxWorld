@@ -40,6 +40,7 @@ namespace MaxWorld.Web
             builder.Services.AddScoped<BaseControllerArgument>();
             builder.Services.AddScoped<BaseServiceArgument>();
             builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<NotificationService>();
             #endregion
 
             var app = builder.Build();

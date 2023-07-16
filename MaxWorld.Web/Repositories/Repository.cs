@@ -25,6 +25,11 @@ namespace MaxWorld.Web.Repositories
             return new ManagedTransaction(this);
         }
 
+        public Task<IEnumerable<T>> QueryAsync<T>(string sql, object? param = null)
+        {
+            return _connection.QueryAsync<T>(sql, param, Transaction);
+        }
+
         public Task<T> QueryFirstAsync<T>(string sql, object? param = null)
         {
             return _connection.QueryFirstAsync<T>(sql, param, Transaction);

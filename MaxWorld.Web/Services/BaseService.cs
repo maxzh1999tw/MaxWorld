@@ -2,7 +2,10 @@
 
 namespace MaxWorld.Web.Services
 {
-    public class BaseService
+    /// <summary>
+    /// 基礎 Service 類別，提供資料庫連線的能力
+    /// </summary>
+    public abstract class BaseService
     {
         protected Repository Repository { get; set; }
 

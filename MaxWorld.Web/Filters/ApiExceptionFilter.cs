@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace MaxWorld.Web.Filters
 {
+    /// <summary>
+    /// API 專用的 ExceptionFilter，會以標準格式回傳錯誤訊息
+    /// </summary>
     public class ApiExceptionFilter : ExceptionFilterAttribute
     {
         public override void OnException(ExceptionContext context)
@@ -12,9 +15,9 @@ namespace MaxWorld.Web.Filters
             {
                 Success = false,
 
-                #if DEBUG
+#if DEBUG
                 Payload = context.Exception.ToString(),
-                #endif
+#endif
             });
         }
     }

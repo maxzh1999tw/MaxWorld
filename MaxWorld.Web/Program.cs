@@ -6,8 +6,6 @@ using MaxWorld.Web.Utilities.MailSenders;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace MaxWorld.Web
 {

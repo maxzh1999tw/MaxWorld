@@ -24,7 +24,7 @@ namespace MaxWorld.Web.Filters
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (context.ActionDescriptor is not ControllerActionDescriptor 
+            if (context.ActionDescriptor is not ControllerActionDescriptor
                 || IsOverwrittenByAction(context)
                 || IsAllowAnonymous(context))
             {
@@ -36,8 +36,8 @@ namespace MaxWorld.Web.Filters
 
             if (string.IsNullOrEmpty(sessionUserInfoJson))
             {
-                context.Result = _isApi ?  
-                    new UnauthorizedResult() : 
+                context.Result = _isApi ?
+                    new UnauthorizedResult() :
                     new RedirectToActionResult(nameof(HomeController.Login), "Home", null);
             }
         }

@@ -10,7 +10,7 @@ namespace MaxWorld.Web.Utilities.MailSenders
         public string Body { get; set; }
         public IEnumerable<Attachment>? Attachments { get; set; }
 
-        public MailData(IEnumerable<string> to, string subject, string body, IEnumerable<string>? cc = null,  IEnumerable<Attachment>? attachments = null)
+        public MailData(IEnumerable<string> to, string subject, string body, IEnumerable<string>? cc = null, IEnumerable<Attachment>? attachments = null)
         {
             To = to;
             CC = cc;

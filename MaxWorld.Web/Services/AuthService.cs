@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using MaxWorld.Data.Users;
+﻿using MaxWorld.Data.Users;
 using MaxWorld.Web.Utilities;
 
 namespace MaxWorld.Web.Services

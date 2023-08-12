@@ -10,13 +10,15 @@ namespace MaxWorld.Web.Controllers
     [CustomAuthorize]
     public class ExerciseController : BaseController
     {
-        readonly ExerciseService _exerciseService;
+        private readonly ExerciseService _exerciseService;
 
         public ExerciseController(BaseControllerArgument baseControllerArgument,
             ExerciseService exerciseService) : base(baseControllerArgument)
         {
             _exerciseService = exerciseService;
         }
+
+        #region === 回傳 View ===
 
         public IActionResult Index()
         {
@@ -33,6 +35,11 @@ namespace MaxWorld.Web.Controllers
             return View();
         }
 
+        #endregion
+
+        /// <summary>
+        /// 取得運動項目管理的列表頁資訊
+        /// </summary>
         [ApiExceptionFilter]
         [CustomAuthorize(isApi: true)]
         public async Task<IActionResult> GetExercisesList()
@@ -41,6 +48,9 @@ namespace MaxWorld.Web.Controllers
             return ApiSuccess(exercisesList);
         }
 
+        /// <summary>
+        /// 新增運動項目
+        /// </summary>
         [HttpPost]
         [ApiExceptionFilter]
         [CustomAuthorize(isApi: true)]
@@ -51,7 +61,7 @@ namespace MaxWorld.Web.Controllers
                 return ApiFailed(InvalidModelState);
             }
 
-            if (! await _exerciseService.ExerciseNameAvaliableAsync(createModel.Name))
+            if (!await _exerciseService.ExerciseNameAvaliableAsync(createModel.Name))
             {
                 return ApiFailed("NameUsed");
             }
@@ -64,6 +74,9 @@ namespace MaxWorld.Web.Controllers
             return ApiSuccess();
         }
 
+        /// <summary>
+        /// 取得運動項目資料
+        /// </summary>
         [ApiExceptionFilter]
         [CustomAuthorize(isApi: true)]
         public async Task<IActionResult> GetExerciseEditModel(Guid id)
@@ -78,6 +91,9 @@ namespace MaxWorld.Web.Controllers
             return ApiSuccess(editModel);
         }
 
+        /// <summary>
+        /// 更新運動項目資料
+        /// </summary>
         [ApiExceptionFilter]
         [CustomAuthorize(isApi: true)]
         [HttpPost]
@@ -99,6 +115,9 @@ namespace MaxWorld.Web.Controllers
             return ApiSuccess();
         }
 
+        /// <summary>
+        /// 刪除運動項目
+        /// </summary>
         [ApiExceptionFilter]
         [CustomAuthorize(isApi: true)]
         [HttpDelete]

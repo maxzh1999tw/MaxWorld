@@ -1,26 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MaxWorld.Web.Filters;
+﻿using MaxWorld.Web.Filters;
 using MaxWorld.Web.Models;
 using MaxWorld.Web.Services;
 using MaxWorld.Web.Utilities.MailSenders;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace MaxWorld.Web.Controllers
 {
     [CustomAuthorize]
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly AuthService _authService;
         private readonly MailHelper _mailHelper;
+
         public HomeController(
-            ILogger<HomeController> logger,
             AuthService authService,
             MailHelper mailHelper,
             BaseControllerArgument baseControllerArgument) : base(baseControllerArgument)
         {
-            _logger = logger;
             _authService = authService;
             _mailHelper = mailHelper;
         }
@@ -92,15 +90,13 @@ namespace MaxWorld.Web.Controllers
                 return ApiFailed(InvalidModelState);
             }
 
-
             if (await _authService.IsAccountRegisteredAsync(email))
             {
                 return ApiFailed("Registered");
             }
 
             using var trans = Repository.BeginTransaction();
-            Guid userId;
-            userId = await _authService.RegisterAsync(email, password, name);
+            Guid userId = await _authService.RegisterAsync(email, password, name);
             trans.Commit();
 
             SessionUserInfo = new SessionUserInfo(userId, name);
@@ -137,7 +133,6 @@ namespace MaxWorld.Web.Controllers
                 return ApiFailed("Invalid");
             }
 
-            // TODO: 重設帳號流程
             var resetToken = await _authService.GeneratePasswordResetTokenAsync(email);
             string scheme = Url.ActionContext.HttpContext.Request.Scheme;
             var resetUrl = $"{Url.Action("ResetPassword", "Home", null, scheme)}?token={resetToken}";

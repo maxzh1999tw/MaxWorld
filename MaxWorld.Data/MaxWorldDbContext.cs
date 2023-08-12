@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MaxWorld.Data.Exercises;
 using MaxWorld.Data.Users;
-using MaxWorld.Data.Exercises;
+using Microsoft.EntityFrameworkCore;
 
 namespace MaxWorld.Data
 {

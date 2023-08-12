@@ -3,6 +3,9 @@ using System.Data;
 
 namespace MaxWorld.Web.Repositories
 {
+    /// <summary>
+    /// 附帶 Transaction 管理的資料庫操作元件，提供同一 Scope 內共同啟用 Transaction 的功能。
+    /// </summary>
     public class Repository
     {
         private IDbConnection _connection;
@@ -16,7 +19,7 @@ namespace MaxWorld.Web.Repositories
 
         public ManagedTransaction BeginTransaction()
         {
-            if(Transaction != null)
+            if (Transaction != null)
             {
                 throw new InvalidOperationException();
             }

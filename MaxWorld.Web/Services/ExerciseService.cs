@@ -17,6 +17,11 @@ namespace MaxWorld.Web.Services
                 """);
         }
 
+        /// <summary>
+        /// 檢查名稱是否可用
+        /// </summary>
+        /// <param name="name">欲檢查的名稱</param>
+        /// <param name="exerciseId">更新資料時帶入Id，以排除自身</param>
         public Task<bool> ExerciseNameAvaliableAsync(string name, Guid? exerciseId = null)
         {
             return Repository.QueryFirstAsync<bool>($"""

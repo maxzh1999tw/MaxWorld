@@ -4,6 +4,7 @@ using MaxWorld.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaxWorld.Data.Migrations
 {
     [DbContext(typeof(MaxWorldDbContext))]
-    partial class MaxWorldDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230812004514_Exercise")]
+    partial class Exercise
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,11 +47,9 @@ namespace MaxWorld.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Field2Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Field2Unit")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")

@@ -6,6 +6,8 @@ using MaxWorld.Web.Utilities.MailSenders;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace MaxWorld.Web
 {
@@ -41,6 +43,7 @@ namespace MaxWorld.Web
             builder.Services.AddScoped<BaseServiceArgument>();
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<ExerciseService>();
             #endregion
 
             var app = builder.Build();

@@ -1,0 +1,145 @@
+﻿@using System.Text.Json;
+@using MaxWorld.Web.Models.Exercises;
+@{
+    ViewBag.Title = "編輯運動項目";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@ViewBag.Title</h1>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header d-flex py-3 justify-content-end">
+        <a class="btn btn-close" href="@Url.Action("Index")">返回列表</a>
+        <button type="button" class="btn btn-success" @@click="submit">儲存</button>
+    </div>
+    <div class="card-body">
+
+        <div class="mb-3">
+            <label class="form-label required" for="name">項目名稱</label>
+            <input class="form-control" id="name" v-model="model.name" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="description">介紹</label>
+            <textarea class="form-control" id="description" v-model="model.description"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="field_1_name">欄位1名稱</label>
+            <input class="form-control" id="field_1_name" v-model="model.field1Name" placeholder="如: 重量" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="field_1_unit">欄位1單位</label>
+            <input class="form-control" id="field_1_unit" v-model="model.field1Unit" placeholder="如: kg" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="field_1_name">欄位2名稱</label>
+            <input class="form-control" id="field_1_name" v-model="model.field2Name" placeholder="如: 次數" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="field_1_name">欄位2單位</label>
+            <input class="form-control" id="field_1_name" v-model="model.field2Unit" placeholder="如: 下" />
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" id="should_time_fields_as_total" v-model="model.shouldTimeFieldsAsTotal" type="checkbox" />
+            <label class="form-check-label" for="should_time_fields_as_total">將兩個欄位相乘作為訓練量</label>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        createApp({
+            data() {
+                return {
+                    model: {}
+                }
+            },
+            created() {
+                const urlParams = new URLSearchParams(window.location.search)
+                const id = urlParams.get('id')
+                let thisApp = this
+                ajaxApi({
+                    method: 'get',
+                    url: `@Url.Action("GetExerciseEditModel")?id=${id}`,
+                }, async response => {
+                    if (response.data.success) {
+                        thisApp.model = response.data.payload
+                        return
+                    }
+
+                    switch (response.data.errorCode) {
+                        default:
+                            await Swal.fire({
+                                text: '發生錯誤，請聯絡系統管理員，或稍後再試！',
+                                icon: 'error',
+                            })
+                            window.location.href = '@Url.Action("Index")'
+                            
+                    }
+                })
+            },
+            methods: {
+                validModel() {
+                    if (isNullOrEmpty(this.model.name)) {
+                        Swal.fire({
+                            text: '請填寫項目名稱',
+                            icon: 'warning',
+                        })
+                        return false
+                    }
+                    return true;
+                },
+                submit() {
+                    if (!this.validModel()) return;
+
+                    let thisApp = this;
+                    ajaxApi({
+                        method: 'post',
+                        url: '@Url.Action("Update")',
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        data: thisApp.model,
+                    }, async response => {
+                        if (response.data.success) {
+                            await Swal.fire({
+                                text: '儲存成功！',
+                                icon: 'success',
+                            })
+                            window.location.href = '@Url.Action("Index")'
+                            return
+                        }
+
+                        switch (response.data.errorCode) {
+                            case 'InvalidModelState':
+                                Swal.fire({
+                                    text: '內容輸入有誤，儲存失敗！',
+                                    icon: 'warning',
+                                })
+                                break;
+                            case 'SaveFailed':
+                                Swal.fire({
+                                    text: '儲存失敗，請聯絡系統管理員，或稍後再試！',
+                                    icon: 'error',
+                                })
+                                break;
+                            default:
+                                Swal.fire({
+                                    text: '發生錯誤，請聯絡系統管理員，或稍後再試！',
+                                    icon: 'error',
+                                })
+                        }
+                    })
+                }
+            }
+        }).mount('#main-app')
+    </script>
+}

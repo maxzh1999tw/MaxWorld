@@ -12,6 +12,7 @@
     <title>@ViewBag.Title - Max World</title>
 
     <partial name="_Css" />
+    <partial name="_Scripts" />
 </head>
 
 <body class="bg-gradient-primary">
@@ -19,8 +20,6 @@
     <div class="container">
         @RenderBody()
     </div>
-
-    <partial name="_Scripts" />
     @RenderSection("Scripts", required: false)
 
 </body>

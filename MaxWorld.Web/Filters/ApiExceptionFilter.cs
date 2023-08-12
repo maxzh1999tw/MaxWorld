@@ -13,7 +13,7 @@ namespace MaxWorld.Web.Filters
                 Success = false,
 
                 #if DEBUG
-                Payload = context.Exception,
+                Payload = context.Exception.ToString(),
                 #endif
             });
         }

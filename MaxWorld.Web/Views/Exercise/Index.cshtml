@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "運動項目管理";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@ViewBag.Title</h1>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <a href="@Url.Action("Create")" class="btn btn-primary">新增</a>
+    </div>
+    <div class="card-body">
+        <div class="row">
+
+            <div v-for="(exercise, i) in exercises" :key="exercise.exerciseId" class="col-lg-6">
+                <div class="card shadow mb-4">
+                    <a :href="'#collapseExercise'+i" class="d-block card-header py-3" data-toggle="collapse" role="button">
+                        <h6 class="m-0 font-weight-bold text-primary">{{ exercise.name }}</h6>
+                    </a>
+                    <div class="collapse" :id="'collapseExercise'+i">
+                        <div class="card-body">
+                            {{ exercise.description }}
+
+                            <div class="d-flex justify-content-end">
+                                <a class="btn btn-primary mr-2" :href="'@Url.Action("Edit")?id='+exercise.exerciseId">編輯</a>
+                                <button type="button" class="btn btn-warning" @@click="deleteExercise(exercise.exerciseId)">刪除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="col-lg-12" v-show="exercises.length == 0">還沒有任何運動項目喔~</p>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        createApp({
+            data() {
+                return {
+                    exercises: []
+                }
+            },
+            created() {
+                let thisApp = this
+                ajaxApi({
+                    method: 'get',
+                    url: '@Url.Action("GetExercisesList")',
+                }, async response => {
+                    if (response.data.success) {
+                        thisApp.exercises = response.data.payload
+                        return
+                    }
+
+                    switch (response.data.errorCode) {
+                        default:
+                            Swal.fire({
+                                text: '發生錯誤，請聯絡系統管理員，或稍後再試！',
+                                icon: 'error',
+                            })
+                    }
+                })
+            },
+            methods: {
+                async deleteExercise(exerciseId){
+                    let thisApp = this
+                    let result = await Swal.fire({
+                        text: '您確定要刪除此項運動項目嗎？',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: '確定',
+                        cancelButtonText: '取消'
+                    })
+
+                    if (!result.isConfirmed) return
+
+                    ajaxApi({
+                        method: 'delete',
+                        url: `@Url.Action("Delete")?id=${exerciseId}`,
+                    }, async response => {
+                        if (response.data.success) {
+                            thisApp.exercises = thisApp.exercises.filter(exercise => exercise.exerciseId != exerciseId)
+                            Swal.fire({
+                                text: '刪除成功！',
+                                icon: 'success',
+                            })
+                            return
+                        }
+
+                        switch (response.data.errorCode) {
+                            default:
+                                let result = Swal.fire({
+                                    text: '發生錯誤，請聯絡系統管理員，或稍後再試！',
+                                    icon: 'error',
+                                })
+                        }
+                    })
+                }
+            }
+        }).mount('#main-app')
+    </script>
+}

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaxWorld.Data", "MaxWorld.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaxWorld.Web", "MaxWorld.Web\MaxWorld.Web.csproj", "{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaxWorld.UnitTest", "MaxWorld.UnitTest\MaxWorld.UnitTest.csproj", "{61A149CE-030F-45B3-ABF8-42D5776530FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1AA30D3-5B75-4D43-9FD7-604BC80172EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A149CE-030F-45B3-ABF8-42D5776530FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A149CE-030F-45B3-ABF8-42D5776530FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A149CE-030F-45B3-ABF8-42D5776530FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A149CE-030F-45B3-ABF8-42D5776530FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
